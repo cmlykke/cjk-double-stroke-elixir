@@ -52,6 +52,17 @@ Here is a suggestion of how to install it:
 - Check everything is good
 `mix --version`
 
+## Create an erlang SDK in intellij
+In IntelliJ, open File → Project Structure
+On the left, select SDKs
+Click the + button (top left of the SDKs window)
+Select Erlang SDK
+Choose "Add Erlang SDK from disk..."
+
+Now, in the folder selection dialog, paste this exact path:
+
+\\wsl$\Ubuntu\home\cmlykke\.asdf\shims
+
 ## Clone the project to wsl ubuntu
 
 - Create a new folder in the utuntu root:
