@@ -78,12 +78,33 @@ Now, in the folder selection dialog, paste this exact path:
 
 
 
+##  setup SDKs in vscode
+- inside wsl, go to the project: (in powershell:)
+    - `wsl.exe -d Ubuntu`
+    - `cd ~/codingprojects/cjk-double-stroke-elixir`
+- open vscode:
+    - `code .`
+- install Remote Development extension pack:
+- go to the windows (not the wsl) vs code, and install this extension:
+  Remote Development (Identifier ms-vscode-remote.vscode-remote-extensionpack Version
+  0.26.0)
+- close and reopen VS code
+- go back to WSL:
+  cd ~/codingprojects/cjk-double-stroke-elixir
+  code .
+  (imprtant! it should say "WSL: Ubuntu")
+- install these plugin in VS code:
+  ElixirLS: Elixir support and debugger
+  (Identifier jakebecker.elixir-ls Version 0.30.0)
 
+## Access files in wsl
 
-
-
-
-
+- open File Explorer
+- in addressbar:
+  \\wsl$\Ubuntu
+- cd ~
+- navigate to file
+ 
 
 
 
