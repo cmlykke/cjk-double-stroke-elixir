@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "mix_task",
+      "request": "launch",
+      "name": "Debug Current Test",
+      "task": "test",
+      "taskArgs": ["${relativeFile}:${lineNumber}"],
+      "startApps": true,
+      "projectDir": "${workspaceFolder}",
+      "env": {
+        "MIX_ENV": "test"
+      }
+    }
+  ]
+}
