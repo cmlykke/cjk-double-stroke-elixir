@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "mix test: current test",
+            "type": "shell",
+            "command": "mix",
+            "args": ["test", "${relativeFile}:${lineNumber}"],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "focus": true
+            },
+            "problemMatcher": ["$mixTestFailure"]
+        },
+        {
+            "label": "mix test: current file",
+            "type": "shell",
+            "command": "mix",
+            "args": ["test", "${relativeFile}"],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "focus": true
+            },
+            "problemMatcher": ["$mixTestFailure"]
+        },
+        {
+            "label": "mix test: all",
+            "type": "shell",
+            "command": "mix",
+            "args": ["test"],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "focus": true
+            }
+        }
+    ]
+}
