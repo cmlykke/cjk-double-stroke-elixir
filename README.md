@@ -78,7 +78,7 @@ Now, in the folder selection dialog, paste this exact path:
 
 
 
-##  setup SDKs in vscode
+##  setup in vscode
 - inside wsl, go to the project: (in powershell:)
     - `wsl.exe -d Ubuntu`
     - `cd ~/codingprojects/cjk-double-stroke-elixir`
@@ -96,6 +96,11 @@ Now, in the folder selection dialog, paste this exact path:
 - install these plugin in VS code:
   ElixirLS: Elixir support and debugger
   (Identifier jakebecker.elixir-ls Version 0.30.0)
+- to run tests, install this extension: samuel-pordeus.elixir-test
+- Ctrl + Shift + 8 + C: test under curser
+- Ctrl + Shift + 8 + F: whole test file
+- Ctrl + Shift + 8 + D: whole test directory
+- Ctrl + Shift + 8 + L: run last 
 
 ## Access files in wsl
 
@@ -104,8 +109,7 @@ Now, in the folder selection dialog, paste this exact path:
   \\wsl$\Ubuntu
 - cd ~
 - navigate to file
- 
-
+  
 
 
 
