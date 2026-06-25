@@ -1,0 +1,43 @@
+
+
+conway file:
+fetched 2026-06-25
+https://github.com/stroke-input/stroke-input-data/blob/master/codepoint-character-sequence.txt
+
+
+ids file:
+fetched 2026-06-25:
+https://github.com/cjkvi/cjkvi-ids
+
+
+cedict file:
+fetched 2026-06-25:
+https://www.mdbg.net/chinese/dictionary?page=cc-cedict
+
+
+frequency simplified - Hongbing corpus:
+fetched 2026-06-25:
+Chinese character list from 2.5 billion words corpus ordered by frequency
+https://faculty.blcu.edu.cn/xinghb/zh_CN/article/167473/content/1437.htm
+
+
+frequency traditional - Tzai corpus:
+fetched 2026-06-25:
+https://technology.chtsai.org/charfreq/
+
+
+word frequency list - simplified:
+fetched 2026-06-25
+global_wordfreq.release_UTF-8
+https://www.plecoforums.com/threads/word-frequency-list-based-on-a-15-billion-character-corpus-bcc-blcu-chinese-corpus.5859/
+original source:
+https://bcc.blcu.edu.cn/
+
+
+word frequency list - traditional:
+fetched 2026-06-25
+words.json
+https://huggingface.co/datasets/zetavg/tw-sinica-corpus-word-frequency/raw/main/words.json
+original source:
+https://asbc.iis.sinica.edu.tw/
+
