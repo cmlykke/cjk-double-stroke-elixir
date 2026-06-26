@@ -77,6 +77,8 @@ defmodule ReadstaticfilesTest do
     assert length(pairs) == 146162
     # Test first pair
     assert hd(pairs) == {"的", "284589"}
+    # value at index 59999
+    assert Enum.at(pairs, 59999) == {"代表色", "3"}
     # Test last pair
     assert List.last(pairs) == {"••／ｂｉｎ／ｅｔｃ／ａｓｐａｃ／ｂｉｎ／ｕｓｒ／", "1"}
 
