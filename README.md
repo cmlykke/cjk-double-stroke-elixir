@@ -105,7 +105,14 @@ Now, in the folder selection dialog, paste this exact path:
 - cd ~
 - navigate to file
   
+## starting workflow
 
+- login to wsl: 
+wsl.exe -d Ubuntu
+- go to root:
+cd ~
+- navigate to project and type: 
+code .
 
 
 
