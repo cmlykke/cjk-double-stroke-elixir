@@ -1,25 +1,40 @@
 defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
   @staticfiles_dir Path.join([__DIR__, "../../../staticfiles"])
 
-  @spec read_file(String.t()) :: String.t()
   def read_file(relative_path) do
     File.read!(Path.join(@staticfiles_dir, relative_path))
   end
 
-  @spec non_ascii_chars_set(String.t()) :: MapSet.t(non_neg_integer())
   def non_ascii_chars_set(string) when is_binary(string) do
     string
-    |> String.to_charlist()
-    |> Enum.filter(fn char -> char > 127 end)
+    |> String.graphemes()                    # Split into Unicode characters
+    |> Enum.filter(fn char ->
+        String.to_charlist(char) |> hd() > 127   # Keep only non-ASCII
+      end)
     |> MapSet.new()
   end
 
-  @spec contains_non_ascii?(String.t()) :: boolean()
   def contains_non_ascii?(string) when is_binary(string) do
     String.match?(string, ~r/[^\x00-\x7F]/u)
   end
 
-  @spec read_radicals_set() :: MapSet.t(non_neg_integer())
+  defp remove_ascii(string) when is_binary(string) do
+    string
+    |> String.to_charlist()
+    |> Enum.reject(fn char -> char <= 127 end)   # Remove ASCII (0-127)
+    |> List.to_string()
+  end
+
+  defp starts_with_ascii?(line) do
+    case String.at(line, 0) do
+      nil -> true
+      char ->
+        # ASCII range: 0-127
+        char < "Ā"   # Anything before Ā (U+0100) is ASCII
+    end
+  end
+
+  @spec read_radicals_set() :: MapSet.t(String.t())
   def read_radicals_set do
     "customfiles/radicals.txt"
     |> read_file()
@@ -41,11 +56,97 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
       end)
   end
 
-  @spec read_codepoint_sequence() :: binary()
-  def read_codepoint_sequence, do: read_file("webfiles/codepoint-character-sequence.txt")
-  def read_global_wordfreq, do: read_file("webfiles/global_wordfreq_release_UTF-8.txt")
-  def read_hongbing_xlsx, do: read_file("webfiles/hongbing.xlsx")
-  def read_ids, do: read_file("webfiles/ids.txt")
-  def read_tzai, do: read_file("webfiles/tzai.txt")
-  def read_words_json, do: read_file("webfiles/words.json")
+  @type chinese_char_conway() :: String.t() # single Unicode character
+  @type codepoint_pair() :: {chinese_char_conway(), String.t()}
+  @spec read_conway_strokes() :: [codepoint_pair()]
+  def read_conway_strokes do
+    read_file("webfiles/codepoint-character-sequence.txt")
+    |> String.split("\n", trim: true)
+    |> Enum.filter(&String.starts_with?(&1, "U+"))
+    |> Enum.map(fn line ->
+        [_, char, strokes | _] = String.split(line, ~r/\s+/, trim: true)
+        # Remove all ASCII characters from the first item (char)
+        cleaned_char = remove_ascii(char)
+        {cleaned_char, strokes}
+      end)
+  end
+
+
+  @type chinese_char_simpwordfreq() :: String.t() # single Unicode character
+  @type simpwordfreq_pair() :: {chinese_char_simpwordfreq(), String.t()}
+  @spec read_global_wordfreq() :: [simpwordfreq_pair()]
+  def read_global_wordfreq do
+    read_file("webfiles/global_wordfreq_release_UTF-8.txt")
+    |> String.replace_prefix("\uFEFF", "")
+    |> String.trim()
+    |> String.split("\n", trim: true)
+    |> Enum.map(fn line ->
+        case String.split(line, ~r/\s+/, trim: true) do
+          [char, count | _] -> {char, count}
+          [single]          -> {single, "0"}     # fallback for malformed lines
+          _                 -> nil
+        end
+      end)
+    |> Enum.reject(&is_nil/1)                    # Remove any bad lines
+  end
+
+
+  @type hongbing_pair() :: {String.t(), String.t()}
+  @spec read_hongbing_csv() :: [hongbing_pair()]
+  def read_hongbing_csv do
+    Path.expand("../../../../lib/staticfiles/webfiles/hongbing.csv", __DIR__)
+    |> File.stream!()
+    |> CSV.decode!(headers: false, strip: true)
+    |> Enum.drop(1)
+    |> Enum.filter(fn
+        [_, char | _] when is_binary(char) and char != "" and char != " " -> true
+        _ -> false
+      end)
+    |> Enum.map(fn row ->
+        [_, char, frequency | _] = row
+        {String.trim(char), String.trim(frequency)}
+      end)
+  end
+
+
+  @type chinese_char_ids() :: String.t() # single Unicode character
+  @type ids_pair() :: {chinese_char_ids(), String.t()}
+  @spec read_ids() :: [ids_pair()]
+  def read_ids do
+    read_file("webfiles/ids.txt")
+    |> String.split("\n", trim: true)
+    |> Enum.filter(&String.starts_with?(&1, "U+"))
+    |> Enum.map(fn line ->
+        [_, char, idsseq | _] = String.split(line, ~r/\s+/, trim: true)
+        # Remove all ASCII characters from the first item (char)
+        {char, idsseq}
+      end)
+  end
+
+  def read_tzai do
+    read_file("webfiles/tzai.txt")
+    |> String.split("\n", trim: true)
+    |> Enum.reject(&starts_with_ascii?/1)
+    |> Enum.map(fn line ->
+        [char, count | _] = String.split(line, ~r/\s+/, trim: true)
+        {char, count}
+      end)
+  end
+
+
+
+  def read_words_json_stream do
+    path = Path.expand("../../../../lib/staticfiles/webfiles/words.json", __DIR__)
+
+    File.stream!(path, [:read_ahead], 131_072)
+    |> Stream.flat_map(fn chunk ->
+      Regex.scan(~r/"word"\s*:\s*"([^"]+)"[^}]*?"frequency"\s*:\s*(\d+)/, chunk)
+    end)
+    |> Stream.map(fn [_, word, freq] ->
+      {word, freq}
+    end)
+    |> Stream.uniq_by(fn {w, _} -> w end)
+  end
+
+
 end
