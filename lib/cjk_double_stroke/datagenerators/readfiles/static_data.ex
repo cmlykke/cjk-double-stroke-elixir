@@ -30,27 +30,59 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
   Load all data into memory. Safe to call multiple times.
   """
   def init do
-    # Only load if not already loaded
     if :persistent_term.get(@global_wordfreq, :not_loaded) == :not_loaded do
-      :persistent_term.put(@cedict,          Readstaticfiles.read_cedict())
-      :persistent_term.put(@radicals,        Readstaticfiles.read_radicals_set())
-      :persistent_term.put(@conway,          Readstaticfiles.read_conway_strokes())
-      :persistent_term.put(@ids,             Readstaticfiles.read_ids())
-      :persistent_term.put(@hongbing,        Readstaticfiles.read_hongbing_csv())
-      :persistent_term.put(@global_wordfreq, Readstaticfiles.read_global_wordfreq())
-      :persistent_term.put(@tzai,            Readstaticfiles.read_tzai())
+      IO.puts("Loading static CJK data into memory (this may take a while for large files)...")
 
+      IO.write("  [1/7] cedict... ")
+      cedict = Readstaticfiles.read_cedict()
+      :persistent_term.put(@cedict, cedict)
+      IO.puts("done (#{length(cedict)} entries)")
+
+      IO.write("  [2/7] radicals... ")
+      radicals = Readstaticfiles.read_radicals_set()
+      :persistent_term.put(@radicals, radicals)
+      IO.puts("done (#{MapSet.size(radicals)} radicals)")
+
+      IO.write("  [3/7] conway strokes... ")
+      conway = Readstaticfiles.read_conway_strokes()
+      :persistent_term.put(@conway, conway)
+      IO.puts("done (#{length(conway)} entries)")
+
+      IO.write("  [4/7] ids... ")
+      ids = Readstaticfiles.read_ids()
+      :persistent_term.put(@ids, ids)
+      IO.puts("done (#{length(ids)} entries)")
+
+      IO.write("  [5/7] hongbing... ")
+      hongbing = Readstaticfiles.read_hongbing_csv()
+      :persistent_term.put(@hongbing, hongbing)
+      IO.puts("done (#{length(hongbing)} entries)")
+
+      IO.write("  [6/7] global wordfreq... ")
+      global_freq = Readstaticfiles.read_global_wordfreq()
+      :persistent_term.put(@global_wordfreq, global_freq)
+      IO.puts("done (#{length(global_freq)} entries)")
+
+      IO.write("  [7/7] tzai... ")
+      tzai = Readstaticfiles.read_tzai()
+      :persistent_term.put(@tzai, tzai)
+      IO.puts("done (#{length(tzai)} entries)")
+
+      IO.write("  words.json (streaming + unique)... ")
       words = Readstaticfiles.read_words_json_stream() |> Enum.to_list()
       :persistent_term.put(@words_json, words)
+      IO.puts("done (#{length(words)} words)")
 
-      # Build lookup maps
-      :persistent_term.put(@conway_map,   Map.new(:persistent_term.get(@conway)))
-      :persistent_term.put(@ids_map,      Map.new(:persistent_term.get(@ids)))
-      :persistent_term.put(@hongbing_map, Map.new(:persistent_term.get(@hongbing)))
-      :persistent_term.put(@global_map,   Map.new(:persistent_term.get(@global_wordfreq)))
-      :persistent_term.put(@tzai_map,     Map.new(:persistent_term.get(@tzai)))
+      IO.write("  Building fast lookup maps... ")
+      :persistent_term.put(@conway_map,   Map.new(conway))
+      :persistent_term.put(@ids_map,      Map.new(ids))
+      :persistent_term.put(@hongbing_map, Map.new(hongbing))
+      :persistent_term.put(@global_map,   Map.new(global_freq))
+      :persistent_term.put(@tzai_map,     Map.new(tzai))
       :persistent_term.put(@words_map,    Map.new(words))
+      IO.puts("done")
 
+      IO.puts("StaticData ready.")
       :ok
     else
       :already_loaded
