@@ -6,7 +6,8 @@ defmodule CjkDoubleStroke.MixProject do
       app: :cjk_double_stroke,
       version: "0.1.0",
       elixir: "~> 1.19",
-      start_permanent: Mix.env() == :prod,
+      start_permanent: true,
+      mod: {CjkDoubleStroke.Application, []},
       deps: deps()
     ]
   end

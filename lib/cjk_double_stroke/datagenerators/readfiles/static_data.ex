@@ -89,25 +89,27 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
     end
   end
 
+  defp ensure_loaded, do: init()
+
   # === Accessors (return the same structure as before) ===
 
-  def cedict,           do: :persistent_term.get(@cedict)
-  def radicals_set,     do: :persistent_term.get(@radicals)
-  def conway_strokes,   do: :persistent_term.get(@conway)
-  def ids,              do: :persistent_term.get(@ids)
-  def hongbing_csv,     do: :persistent_term.get(@hongbing)
-  def global_wordfreq,  do: :persistent_term.get(@global_wordfreq)
-  def tzai,             do: :persistent_term.get(@tzai)
-  def words_json,       do: :persistent_term.get(@words_json)
+  def cedict,           do: (ensure_loaded(); :persistent_term.get(@cedict))
+  def radicals_set,     do: (ensure_loaded(); :persistent_term.get(@radicals))
+  def conway_strokes,   do: (ensure_loaded(); :persistent_term.get(@conway))
+  def ids,              do: (ensure_loaded(); :persistent_term.get(@ids))
+  def hongbing_csv,     do: (ensure_loaded(); :persistent_term.get(@hongbing))
+  def global_wordfreq,  do: (ensure_loaded(); :persistent_term.get(@global_wordfreq))
+  def tzai,             do: (ensure_loaded(); :persistent_term.get(@tzai))
+  def words_json,       do: (ensure_loaded(); :persistent_term.get(@words_json))
 
   # === Fast O(1) getters ===
 
-  def get_conway(char),      do: Map.get(:persistent_term.get(@conway_map), char)
-  def get_ids(char),         do: Map.get(:persistent_term.get(@ids_map), char)
-  def get_hongbing(char),    do: Map.get(:persistent_term.get(@hongbing_map), char)
-  def get_global_freq(char), do: Map.get(:persistent_term.get(@global_map), char)
-  def get_tzai(char),        do: Map.get(:persistent_term.get(@tzai_map), char)
-  def get_word_freq(word),   do: Map.get(:persistent_term.get(@words_map), word)
+  def get_conway(char),      do: (ensure_loaded(); Map.get(:persistent_term.get(@conway_map), char))
+  def get_ids(char),         do: (ensure_loaded(); Map.get(:persistent_term.get(@ids_map), char))
+  def get_hongbing(char),    do: (ensure_loaded(); Map.get(:persistent_term.get(@hongbing_map), char))
+  def get_global_freq(char), do: (ensure_loaded(); Map.get(:persistent_term.get(@global_map), char))
+  def get_tzai(char),        do: (ensure_loaded(); Map.get(:persistent_term.get(@tzai_map), char))
+  def get_word_freq(word),   do: (ensure_loaded(); Map.get(:persistent_term.get(@words_map), word))
 
-  def has_radical?(r), do: MapSet.member?(radicals_set(), r)
+  def has_radical?(r), do: (ensure_loaded(); MapSet.member?(radicals_set(), r))
 end

@@ -117,6 +117,50 @@ code .
 
 
 
+## Fast iteration workflow (no database reload)
+
+The static data (cedict, ids, conway, etc.) is loaded once into `:persistent_term` and lives for the entire BEAM VM lifetime.  
+`mix test` starts a fresh VM every time, which is slow. Use this instead for rapid editing of `Idsnested.ex`:
+
+0. Recompile the project:
+   ```bash
+   mix compile
+   ```
+
+1. Start IEx **once** (this loads the database in the background):
+   ```bash
+   iex -S mix
+   ```
+   You will see the loading messages from `StaticData.init()`.
+
+2. In the same IEx session, run your test or function:
+   ```elixir
+   alias CjkDoubleStroke.Idsidentifier.Idsnested
+   Idsnested.ids_init_search("是")
+   ```
+
+3. Edit `lib/cjk_double_stroke/ids_identifier/Idsnested.ex` (add/remove code).
+
+4. Recompile only the changed module (sub-second):
+   ```elixir
+   recompile()
+   ```
+
+5. Immediately test again — the in-memory database is never restarted:
+   ```elixir
+   Idsnested.ids_init_search("是")
+   ```
+
+You can keep the same `iex` session open for hours. The database stays loaded.
+
+For the full test:
+```elixir
+Code.require_file("test/codecreators/Idsnested_test.exs")
+ExUnit.run()
+```
+
+This gives you instant feedback while debugging `Idsnested` without ever waiting for data reload.
+
 
 
 
