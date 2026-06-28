@@ -1,0 +1,8 @@
+%{
+  "csv": {:hex, :csv, "3.2.2", "452f96414b39a176b7c390af6d8b78f15130dc6167fe3b836729131f515d843e", [:mix], [], "hexpm", "cbf256ff74a3fa01d9ec420d07b19c90d410ed9fe5b6d6e1bc7662edf35bc574"},
+  "elixir_make": {:hex, :elixir_make, "0.10.0", "16577e2583a79bb79237bbff349619ef5d80afffc07eac6e4faf0d00e2ddaf7d", [:mix], [], "hexpm", "dc1f09fb7fa68866b886abd5f0f3c83553b1a19a52359a899e92af1bb3b31982"},
+  "jason": {:hex, :jason, "1.4.5", "2e3a008590b0b8d7388c20293e9dcc9cf3e5d642fd2a114e4cbbb52e595d940a", [:mix], [{:decimal, "~> 1.0 or ~> 2.0 or ~> 3.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "b0c823996102bcd0239b3c2444eb00409b72f6a140c1950bc8b457d836b30684"},
+  "jaxon": {:hex, :jaxon, "2.0.8", "00951a79d354260e28d7e36f956c3de94818124768a4b22e0fc55559d1b3bfe7", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm", "74532853b1126609615ea98f0ceb5009e70465ca98027afbbd8ed314d887e82d"},
+  "saxy": {:hex, :saxy, "1.6.0", "02cb4e9bd045f25ac0c70fae8164754878327ee393c338a090288210b02317ee", [:mix], [], "hexpm", "ef42eb4ac983ca77d650fbdb68368b26570f6cc5895f0faa04d34a6f384abad3"},
+  "xlsx_reader": {:hex, :xlsx_reader, "0.8.12", "dc575a594d16d2b9c8690abfa3b6727cd54e8ec75af67638c55bc35a6039ceaa", [:mix], [{:decimal, "~> 1.0 or ~> 2.0 or ~> 3.0", [hex: :decimal, repo: "hexpm", optional: true]}, {:saxy, "~> 1.5", [hex: :saxy, repo: "hexpm", optional: false]}], "hexpm", "cb0eaa81b67b8fd1e3c0d9dba11c0bb383a675f565cfba186d094216945491a0"},
+}
