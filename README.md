@@ -119,47 +119,34 @@ code .
 
 ## Fast iteration workflow (no database reload)
 
-The static data (cedict, ids, conway, etc.) is loaded once into `:persistent_term` and lives for the entire BEAM VM lifetime.  
-`mix test` starts a fresh VM every time, which is slow. Use this instead for rapid editing of `Idsnested.ex`:
+All static CJK data is now owned by the dedicated Mnesia node (`db@localhost`).  
+The app/test node never loads the files — it only reads from the remote DB.
 
-0. Recompile the project:
+### Daily setup (once)
+
+1. Start the DB node (this is where the slow loading happens):
    ```bash
-   mix compile
+   iex --sname db@localhost -S mix run --no-halt -e "CjkDoubleStroke.DBServer.start_link([])"
    ```
+   You will see the "Loading static CJK data into Mnesia..." messages here.
 
-1. Start IEx **once** (this loads the database in the background):
+2. In your normal terminal:
    ```bash
-   iex -S mix
-   ```
-   You will see the loading messages from `StaticData.init()`.
-
-2. In the same IEx session, run your test or function:
-   ```elixir
-   alias CjkDoubleStroke.Idsidentifier.Idsnested
-   Idsnested.ids_init_search("是")
+   iex --sname app@localhost -S mix
+   CjkDoubleStroke.DBClient.connect()
    ```
 
-3. Edit `lib/cjk_double_stroke/ids_identifier/Idsnested.ex` (add/remove code).
+### Rapid development loop
 
-4. Recompile only the changed module (sub-second):
-   ```elixir
-   recompile()
-   ```
+Use your VS Code task as usual:
 
-5. Immediately test again — the in-memory database is never restarted:
-   ```elixir
-   Idsnested.ids_init_search("是")
-   ```
+1. `ctrl+alt+w` → run current test
+2. Edit code
+3. `ctrl+alt+w` again
 
-You can keep the same `iex` session open for hours. The database stays loaded.
+All data access on the app node is now a fast remote read from the DB node. No files are ever re-read on the app node, even after restarts or `recompile()`.
 
-For the full test:
-```elixir
-Code.require_file("test/codecreators/Idsnested_test.exs")
-ExUnit.run()
-```
-
-This gives you instant feedback while debugging `Idsnested` without ever waiting for data reload.
+You can keep the `app@localhost` IEx session (and the VS Code task) running for the whole day. Only the DB node needs to stay alive.
 
 
 
