@@ -4,7 +4,7 @@ defmodule CjkDoubleStroke.DBClient do
   Configure the DB node name via config or env.
   """
 
-  @db_node Application.compile_env(:cjk_double_stroke, :db_node, :"db@localhost")
+  @db_node Application.compile_env(:cjk_double_stroke, :db_node, :"db@127.0.0.1")
 
   def put(key, value) do
     GenServer.call({CjkDoubleStroke.DBServer, @db_node}, {:put, key, value})
@@ -40,7 +40,7 @@ defmodule CjkDoubleStroke.DBClient do
   def connect do
     # Ensure this node is part of a distributed Erlang cluster
     unless Node.alive?() do
-      {:ok, _} = :net_kernel.start([:"test-#{:rand.uniform(9999)}@localhost"])
+      {:ok, _} = :net_kernel.start([:"test-#{:rand.uniform(9999)}@127.0.0.1"])
     end
 
     # Retry connection to the dedicated DB node

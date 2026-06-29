@@ -17,4 +17,18 @@ defmodule Idsnested_test do
     # assert Idsnested.ids_init_search("\u2014") == ["\u2014"]
   end
 
+  test "Idsnested.ids_init_search/1 2nd test" do
+
+    # Use a safe character or escape if needed
+    res = Idsnested.ids_init_search("人")
+    assert res == ["人"]
+  end
+
+  test "Idsnested.ids_init_search/1 3nd test" do
+
+    # Use a safe character or escape if needed
+    res = Idsnested.ids_init_search("撥")
+    assert res == ["扌", "②", "③", "弓", "𠘧", "又", "[", "G", "T", "]"]
+  end
+
 end

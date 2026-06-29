@@ -35,6 +35,24 @@
                 "reveal": "always",
                 "focus": true
             }
+        },
+        {
+            "label": "tmux: switch to db",
+            "type": "shell",
+            "command": "tmux",
+            "args": ["select-window", "-t", "cjk-dev:db"],
+            "presentation": {
+                "reveal": "never"
+            }
+        },
+        {
+            "label": "tmux: switch to app",
+            "type": "shell",
+            "command": "tmux",
+            "args": ["select-window", "-t", "cjk-dev:app"],
+            "presentation": {
+                "reveal": "never"
+            }
         }
     ]
 }

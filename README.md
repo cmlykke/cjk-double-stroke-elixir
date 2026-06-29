@@ -148,6 +148,39 @@ All data access on the app node is now a fast remote read from the DB node. No f
 
 You can keep the `app@localhost` IEx session (and the VS Code task) running for the whole day. Only the DB node needs to stay alive.
 
+### tmux script version of startup:
+# Start both nodes in a tmux session
+./bin/start_nodes.sh
 
+# Attach to the session
+tmux attach -t cjk-dev
+
+Inside tmux (reliable shortcuts):
+• Ctrl+b 0          → DB node window
+• Ctrl+b 1          → App node window (already connected)
+• Ctrl+b ' then db  → switch by name to DB
+• Ctrl+b ' then app → switch by name to App
+• Ctrl+b w          → interactive window list
+• Ctrl+b d          → detach (session keeps running)
+• ./bin/stop_nodes.sh → completely clean everything up
+
+Tip: From any terminal (including VS Code's), you can also run:
+  tmux select-window -t cjk-dev:db
+  tmux select-window -t cjk-dev:app
+
+### VS Code shortcuts (add to your keybindings.json)
+```json
+{
+    "key": "ctrl+alt+d",
+    "command": "workbench.action.tasks.runTask",
+    "args": "tmux: switch to db"
+},
+{
+    "key": "ctrl+alt+a",
+    "command": "workbench.action.tasks.runTask",
+    "args": "tmux: switch to app"
+}
+```
+These let you jump straight to the DB or App tmux window from the editor.
 
 
