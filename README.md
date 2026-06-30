@@ -20,6 +20,11 @@ code .
 ### run tests of the distributed setup:
 - ./bin/test_distributed_db.sh
 
+
+## Attach to the session
+```tmux attach -t cjk-dev```
+
+
 ### see elixit nodes:
 ```epmd -names``` or ```epmd -list```
 - inside iex: nodes: 
@@ -29,9 +34,6 @@ Process.list(), Process.registered(), Process.info(self())
 Process.info(Process.whereis(:some_name)), :erlang.system_info(:process_count), 
 :observer.start()
 
-
-## Attach to the session
-```tmux attach -t cjk-dev```
 
 Inside tmux:
 • Ctrl+b then 0 → DB node window

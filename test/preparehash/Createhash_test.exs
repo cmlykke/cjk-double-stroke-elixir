@@ -13,6 +13,8 @@ defmodule CjkDoubleStroke.Datagenerators.StaticDataTest do
   test "get_ids/1 returns ids sequence for a char" do
     item = StaticData.get_ids("一")
     assert item == "一"
+    item = StaticData.get_ids("是")
+    assert item == "⿱日𤴓"
   end
 
   test "get_hongbing/1 returns frequency for a char" do

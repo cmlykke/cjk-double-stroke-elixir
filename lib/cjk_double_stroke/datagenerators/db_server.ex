@@ -53,6 +53,14 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
     GenServer.call(__MODULE__, :load_static_data, 300_000)
   end
 
+  # Per-key lookup functions (executed on DB node for efficiency)
+  def get_ids(char),         do: GenServer.call(__MODULE__, {:get_ids, char})
+  def get_conway(char),      do: GenServer.call(__MODULE__, {:get_conway, char})
+  def get_hongbing(char),    do: GenServer.call(__MODULE__, {:get_hongbing, char})
+  def get_global_freq(char), do: GenServer.call(__MODULE__, {:get_global_freq, char})
+  def get_tzai(char),        do: GenServer.call(__MODULE__, {:get_tzai, char})
+  def get_word_freq(word),   do: GenServer.call(__MODULE__, {:get_word_freq, word})
+
   @impl true
   def handle_call({:put, key, value}, _from, state) do
     {:atomic, result} = :mnesia.transaction(fn ->
@@ -70,6 +78,37 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
       end
     end)
     {:reply, result, state}
+  end
+
+  # Efficient per-key lookups (Map.get runs on DB node, only scalar result is returned)
+  @impl true
+  def handle_call({:get_ids, char}, _from, state) do
+    {:reply, do_map_lookup(:ids_map, char), state}
+  end
+
+  @impl true
+  def handle_call({:get_conway, char}, _from, state) do
+    {:reply, do_map_lookup(:conway_map, char), state}
+  end
+
+  @impl true
+  def handle_call({:get_hongbing, char}, _from, state) do
+    {:reply, do_map_lookup(:hongbing_map, char), state}
+  end
+
+  @impl true
+  def handle_call({:get_global_freq, char}, _from, state) do
+    {:reply, do_map_lookup(:global_map, char), state}
+  end
+
+  @impl true
+  def handle_call({:get_tzai, char}, _from, state) do
+    {:reply, do_map_lookup(:tzai_map, char), state}
+  end
+
+  @impl true
+  def handle_call({:get_word_freq, word}, _from, state) do
+    {:reply, do_map_lookup(:words_map, word), state}
   end
 
   @impl true
@@ -142,5 +181,15 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
       :mnesia.write({@table, key, value})
     end)
     :ok
+  end
+
+  defp do_map_lookup(map_key, lookup_key) do
+    {:atomic, result} = :mnesia.transaction(fn ->
+      case :mnesia.read({@table, map_key}) do
+        [{@table, ^map_key, map}] when is_map(map) -> Map.get(map, lookup_key)
+        _ -> nil
+      end
+    end)
+    result
   end
 end
