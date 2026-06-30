@@ -9,7 +9,7 @@ defmodule CjkDoubleStroke.Application do
 
     # Try to connect to the dedicated DB node (non-blocking).
     # If it fails, the first data access will give a clear error.
-    CjkDoubleStroke.DBClient.connect()
+    CjkDoubleStroke.Datagenerators.DBClient.connect()
 
     # Requires dedicated DB node (db@localhost) to be connected.
     # See DBClient and the README for the fast iteration workflow.

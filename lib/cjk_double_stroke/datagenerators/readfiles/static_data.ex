@@ -10,19 +10,19 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
 
   defp ensure_db_node! do
     # Try hard to connect — especially important for fresh mix test nodes
-    unless CjkDoubleStroke.DBClient.connected?() do
-      CjkDoubleStroke.DBClient.connect()
+    unless CjkDoubleStroke.Datagenerators.DBClient.connected?() do
+      CjkDoubleStroke.Datagenerators.DBClient.connect()
     end
 
-    unless CjkDoubleStroke.DBClient.connected?() do
+    unless CjkDoubleStroke.Datagenerators.DBClient.connected?() do
       raise """
       Dedicated DB node (db@localhost) is not connected.
 
       Start it once in another terminal:
-        iex --sname db@localhost -S mix run --no-halt -e "CjkDoubleStroke.DBServer.start_link([])"
+        iex --sname db@localhost -S mix run --no-halt -e "CjkDoubleStroke.Datagenerators.DBServer.start_link([])"
 
       Then connect from this node:
-        CjkDoubleStroke.DBClient.connect()
+        CjkDoubleStroke.Datagenerators.DBClient.connect()
       """
     end
   end
@@ -36,7 +36,7 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
 
     # Only ask the DB node to load once per app node session
     if Process.get({__MODULE__, :db_loaded}) != true do
-      CjkDoubleStroke.DBClient.load_static_data()
+      CjkDoubleStroke.Datagenerators.DBClient.load_static_data()
       Process.put({__MODULE__, :db_loaded}, true)
     end
 
@@ -47,23 +47,23 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
 
   # === Accessors - all delegate to the dedicated DB node ===
 
-  def cedict,           do: (ensure_loaded(); CjkDoubleStroke.DBClient.cedict())
-  def radicals_set,     do: (ensure_loaded(); CjkDoubleStroke.DBClient.radicals_set())
-  def conway_strokes,   do: (ensure_loaded(); CjkDoubleStroke.DBClient.conway_strokes())
-  def ids,              do: (ensure_loaded(); CjkDoubleStroke.DBClient.ids())
-  def hongbing_csv,     do: (ensure_loaded(); CjkDoubleStroke.DBClient.hongbing_csv())
-  def global_wordfreq,  do: (ensure_loaded(); CjkDoubleStroke.DBClient.global_wordfreq())
-  def tzai,             do: (ensure_loaded(); CjkDoubleStroke.DBClient.tzai())
-  def words_json,       do: (ensure_loaded(); CjkDoubleStroke.DBClient.words_json())
+  def cedict,           do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.cedict())
+  def radicals_set,     do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.radicals_set())
+  def conway_strokes,   do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.conway_strokes())
+  def ids,              do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.ids())
+  def hongbing_csv,     do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.hongbing_csv())
+  def global_wordfreq,  do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.global_wordfreq())
+  def tzai,             do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.tzai())
+  def words_json,       do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.words_json())
 
   # === Fast O(1) getters - delegated to remote DB node ===
 
-  def get_conway(char),      do: (ensure_loaded(); CjkDoubleStroke.DBClient.get_conway(char))
-  def get_ids(char),         do: (ensure_loaded(); CjkDoubleStroke.DBClient.get_ids(char))
-  def get_hongbing(char),    do: (ensure_loaded(); CjkDoubleStroke.DBClient.get_hongbing(char))
-  def get_global_freq(char), do: (ensure_loaded(); CjkDoubleStroke.DBClient.get_global_freq(char))
-  def get_tzai(char),        do: (ensure_loaded(); CjkDoubleStroke.DBClient.get_tzai(char))
-  def get_word_freq(word),   do: (ensure_loaded(); CjkDoubleStroke.DBClient.get_word_freq(word))
+  def get_conway(char),      do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_conway(char))
+  def get_ids(char),         do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_ids(char))
+  def get_hongbing(char),    do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_hongbing(char))
+  def get_global_freq(char), do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_global_freq(char))
+  def get_tzai(char),        do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_tzai(char))
+  def get_word_freq(word),   do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_word_freq(word))
 
-  def has_radical?(r), do: (ensure_loaded(); CjkDoubleStroke.DBClient.has_radical?(r))
+  def has_radical?(r), do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.has_radical?(r))
 end

@@ -12,7 +12,7 @@ tmux has-session -t "$SESSION" 2>/dev/null && tmux kill-session -t "$SESSION"
 echo "Creating tmux session '$SESSION' with DB + App nodes..."
 
 tmux new-session -d -s "$SESSION" -n db \
-  "iex --name db@127.0.0.1 -S mix run --no-halt -e 'CjkDoubleStroke.DBServer.start_link([])'"
+  "iex --name db@127.0.0.1 -S mix run --no-halt -e 'CjkDoubleStroke.Datagenerators.DBServer.start_link([])'"
 
 # Force numeric window indices starting at 0 so Ctrl+b 0/1 always works
 tmux set-option -t "$SESSION" base-index 0
@@ -26,7 +26,7 @@ tmux new-window -t "$SESSION" -n app \
 
 # Send connect command to the app window after it starts
 sleep 2
-tmux send-keys -t "$SESSION:app" 'CjkDoubleStroke.DBClient.connect()' C-m
+tmux send-keys -t "$SESSION:app" 'CjkDoubleStroke.Datagenerators.DBClient.connect()' C-m
 tmux send-keys -t "$SESSION:app" 'IO.puts("Connected to DB node")' C-m
 
 echo ""
