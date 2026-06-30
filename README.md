@@ -1,7 +1,86 @@
 # cjk-double-stroke-elixir
 Implementation of the liuma chinese input method in elixir
 
-# Installations
+
+## starting workflow
+
+- login to wsl: 
+wsl.exe -d Ubuntu
+- go to root:
+cd ~
+- navigate to project and type: 
+code .
+
+
+## tmux script to start daily workflow once code is opened:
+### Start both nodes in a tmux session
+- ./bin/start_nodes.sh
+- ./bin/stop_nodes.sh
+
+### run tests of the distributed setup:
+- ./bin/test_distributed_db.sh
+
+### see elixit nodes:
+```epmd -names``` or ```epmd -list```
+- inside iex: nodes: 
+Node.self(), Node.list(), Node.list(:all), Node.info(Node.self()), :erlang.is_alive()
+- inside iex: processes:
+Process.list(), Process.registered(), Process.info(self())
+Process.info(Process.whereis(:some_name)), :erlang.system_info(:process_count), 
+:observer.start()
+
+
+## Attach to the session
+```tmux attach -t cjk-dev```
+
+Inside tmux:
+• Ctrl+b then 0 → DB node window
+• Ctrl+b then 1 → App node window (already connected)
+• Ctrl+b then d → detach (session keeps running)
+• ./bin/stop_nodes.sh → completely clean everything up
+
+### create a third window for git
+- first, detach from tmux by typing: ctrl+b+d
+- type this in 
+```tmux new-window -t cjk-dev -n git```
+- attach to tmux again:
+```tmux attach -t cjk-dev```
+- go to the new terminal with ctrl+b+2
+
+### interact with the nodes:
+- type Ctrl+b+1 to go to the app node: app@127.0.0.1
+- type this:
+```
+alias CjkDoubleStroke.Idsidentifier.Idsnested
+Idsnested.ids_init_search("是")
+```
+here is the output:
+```["日", "一", "龰"]```
+- type Ctrl+b+0 to go to the db node: db@127.0.0.1
+see this in the output
+```
+Loading static CJK data into Mnesia on DB node...
+  [1/7] cedict... done (125013 entries)
+  [2/7] radicals... done (329 radicals)
+  [3/7] conway strokes... done (28165 entries)
+  [4/7] ids... done (88937 entries)
+  [5/7] hongbing... done (14975 entries)
+  [6/7] global wordfreq... done (1048576 entries)
+  [7/7] tzai... done (13060 entries)
+  words.json... done (146162 words)
+  Building lookup maps... done
+Static data loaded into Mnesia on DB node.
+iex(db@127.0.0.1)2> 
+```
+This means that the db node generated the database 
+once the app node executed the 
+Idsnested.ids_init_search("是") function call.
+
+
+##########################################################
+
+# first time setup - Installations
+
 ## Install erlang and elixir on wsl
 This project requires Elixir 1.19 and Erlang  
 Here is a suggestion of how to install it:
@@ -105,65 +184,3 @@ Now, in the folder selection dialog, paste this exact path:
 - cd ~
 - navigate to file
   
-## starting workflow
-
-- login to wsl: 
-wsl.exe -d Ubuntu
-- go to root:
-cd ~
-- navigate to project and type: 
-code .
-
-
-
-
-## Fast iteration workflow (no database reload)
-
-All static CJK data is now owned by the dedicated Mnesia node (`db@localhost`).  
-The app/test node never loads the files — it only reads from the remote DB.
-
-### Daily setup (once)
-
-1. Start the DB node (this is where the slow loading happens):
-   ```bash
-   iex --sname db@localhost -S mix run --no-halt -e "CjkDoubleStroke.DBServer.start_link([])"
-   ```
-   You will see the "Loading static CJK data into Mnesia..." messages here.
-
-2. In your normal terminal:
-   ```bash
-   iex --sname app@localhost -S mix
-   CjkDoubleStroke.DBClient.connect()
-   ```
-
-### Rapid development loop
-
-Use your VS Code task as usual:
-
-1. `ctrl+alt+w` → run current test
-2. Edit code
-3. `ctrl+alt+w` again
-
-All data access on the app node is now a fast remote read from the DB node. No files are ever re-read on the app node, even after restarts or `recompile()`.
-
-You can keep the `app@localhost` IEx session (and the VS Code task) running for the whole day. Only the DB node needs to stay alive.
-
-### tmux script version of startup:
-# Start both nodes in a tmux session
-- ./bin/start_nodes.sh
-- ./bin/stop_nodes.sh
-
-# run tests
-- ./bin/test_distributed_db.sh
-
-
-# Attach to the session
-tmux attach -t cjk-dev
-
-Inside tmux:
-• Ctrl+b then 0 → DB node window
-• Ctrl+b then 1 → App node window (already connected)
-• Ctrl+b then d → detach (session keeps running)
-• ./bin/stop_nodes.sh → completely clean everything up
-
-
