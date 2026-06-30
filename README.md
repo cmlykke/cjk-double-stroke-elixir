@@ -76,6 +76,13 @@ This means that the db node generated the database
 once the app node executed the 
 Idsnested.ids_init_search("是") function call.
 
+#########################################################
+# commands to help with AI:
+- to copy file tree, type in terminal:
+```tree -a --prune -P "*.ex|*.exs|*.heex|*.eex|mix.exs|*.json|*.yml|*.yaml|*.md" \
+  -I 'node_modules|.git|dist|build|coverage|_build|deps|*.beam' > project-tree.txt```
+- then in the project root, you will now have a file project-tree.txt
+  with the updated project structure. 
 
 ##########################################################
 
