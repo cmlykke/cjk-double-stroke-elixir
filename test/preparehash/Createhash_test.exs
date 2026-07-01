@@ -19,7 +19,7 @@ defmodule CjkDoubleStroke.Datagenerators.StaticDataTest do
 
   test "get_ids/1 result of 簧" do
     item = StaticData.get_ids("簧")
-    assert item == "⿱日𤴓"
+    assert item == "⿱竹黄[G] ⿱竹黃[TJK]"
   end
 
   test "get_hongbing/1 returns frequency for a char" do

@@ -17,6 +17,22 @@ defmodule CjkDoubleStroke.Utils do
     g in [" ", "\t", "\n", "\r", "\f", "\v"] or String.trim(g) == ""
   end
 
+  def unwrap_nested(term) do
+    case term do
+      # Only unwrap lists that contain ONLY other lists
+      list when is_list(list) and list != [] ->
+        if Enum.all?(list, &is_list/1) do
+          Enum.flat_map(list, &unwrap_nested/1)
+        else
+          [list] # Keep lists that contain normal items
+        end
+      # Base case: non-lists or empty list
+      item ->
+        [item]
+    end
+  end
+
+
   def unwrap_single_nested(list) when is_list(list) do
     case list do
       [single] when is_list(single) -> single
