@@ -3,6 +3,28 @@ defmodule CjkDoubleStroke.Utils do
 
 
 
+  def unwrap_singletons(list) when is_list(list) do
+    Enum.map(list, fn item -> if match?([_], item), do: hd(item), else: item end)
+  end
+
+  def split_on_whitespace(graphemes) when is_list(graphemes) do
+    graphemes
+    |> Enum.chunk_by(&is_whitespace_grapheme?/1)
+    |> Enum.reject(&(&1 == [] or is_whitespace_grapheme?(hd(&1))))
+  end
+
+  defp is_whitespace_grapheme?(g) do
+    g in [" ", "\t", "\n", "\r", "\f", "\v"] or String.trim(g) == ""
+  end
+
+  def unwrap_single_nested(list) when is_list(list) do
+    case list do
+      [single] when is_list(single) -> single
+      _other -> list
+    end
+  end
+
+  def unwrap_single_nested(other), do: other
 
   def is_shape_char?(char) when is_binary(char) do
     case String.next_codepoint(char) do
@@ -20,6 +42,23 @@ defmodule CjkDoubleStroke.Utils do
     |> Enum.join("")
   end
 
+
+  def safe_to_graphemes(input) do
+    cond do
+      is_binary(input) -> String.graphemes(input)
+      is_nil(input) -> []
+      true ->
+        IO.warn("safe_to_graphemes got non-binary: #{inspect(input)}")
+        []
+    end
+  end
+
+  def remove_printable_ascii(string) when is_binary(string) do
+    # Remove ASCII characters except whitespace
+    Regex.replace(~r/[[:ascii:]]/u, string, fn match ->
+      if String.match?(match, ~r/^\s$/u), do: match, else: ""
+    end)
+  end
 
   def is_chinese?(char) when is_binary(char) do
     if String.length(char) == 1 do

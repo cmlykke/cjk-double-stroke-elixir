@@ -40,16 +40,26 @@ defmodule CjkDoubleStroke.Idsidentifier.Idsnested do
       is_nil(lookup) or lookup == char ->
         #IO.puts("→ returning [char]")
         [char]
+
       is_binary(lookup) ->
         cleaned = Utils.remove_shape_chars(lookup)
-        #IO.inspect(cleaned, label: "After remove_shape_chars")
-        graphemes = safe_to_graphemes(cleaned)
-        #IO.inspect(graphemes, label: "Graphemes")
-        wrapped = List.wrap(graphemes)
-        #IO.inspect(wrapped, label: "Wrapped list")
-        result = ids_init_charlist(wrapped)
-        #IO.inspect(result, label: "Final result from charlist")
-        result
+        removeascii = Utils.remove_printable_ascii(cleaned)
+        graphemes = Utils.safe_to_graphemes(removeascii)
+
+        # Split the grapheme list over whitespace
+        segments = Utils.split_on_whitespace(graphemes)
+        # unwrap single nested lists if necessary
+        unwrap = Utils.unwrap_single_nested(segments)
+
+        # For each segment, call ids_init_charlist and collect results
+        # This creates a nested list: [[result1], [result2], ...]
+        result = Enum.map(unwrap, fn x ->
+          wrapped_segment = List.wrap(x)
+          ids_init_charlist(wrapped_segment)
+        end)
+
+        preres = Utils.unwrap_singletons(result)
+        preres
 
       true ->
         IO.warn("Unexpected lookup: #{inspect(lookup)}")
@@ -57,20 +67,12 @@ defmodule CjkDoubleStroke.Idsidentifier.Idsnested do
     end
   end
 
+
   def ids_init_wholechar(other) do
     IO.warn("ids_init_wholechar unexpected: #{inspect(other)}")
     [to_string(other)]
   end
 
-  defp safe_to_graphemes(input) do
-    cond do
-      is_binary(input) -> String.graphemes(input)
-      is_nil(input) -> []
-      true ->
-        IO.warn("safe_to_graphemes got non-binary: #{inspect(input)}")
-        []
-    end
-  end
 
   def ids_init_charlist([]), do: []
 

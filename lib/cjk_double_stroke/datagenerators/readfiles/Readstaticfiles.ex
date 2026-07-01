@@ -117,10 +117,15 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
     |> String.split("\n", trim: true)
     |> Enum.filter(&String.starts_with?(&1, "U+"))
     |> Enum.map(fn line ->
-        [_, char, idsseq | _] = String.split(line, ~r/\s+/, trim: true)
-        # Remove all ASCII characters from the first item (char)
-        {char, idsseq}
-      end)
+      # Split on whitespace
+      parts = String.split(line, ~r/\s+/, trim: true)
+      # First part is the codepoint (U+...), second is the char
+      [_codepoint, char | rest] = parts
+      # Join everything after the character into a single string
+      idsseq = Enum.join(rest, " ")
+
+      {char, idsseq}
+    end)
   end
 
   def read_tzai do
