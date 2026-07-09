@@ -2,6 +2,21 @@
 defmodule CjkDoubleStroke.Utils do
 
 
+  def common_strings(a, b) when is_list(a) and is_list(b) do
+    a_set = MapSet.new(a)
+    b
+    |> MapSet.new()
+    |> MapSet.intersection(a_set)
+    |> MapSet.to_list()
+  end
+
+  def allitendical(items) do
+    case items do
+        [] -> true                     # empty list — decide based on your needs
+        [_] -> true                    # single item is always identical to itself
+        [first | rest] -> Enum.all?(rest, &(&1 == first))
+      end
+  end
 
   def unwrap_singletons(list) when is_list(list) do
     Enum.map(list, fn item -> if match?([_], item), do: hd(item), else: item end)

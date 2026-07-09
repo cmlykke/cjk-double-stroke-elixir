@@ -9,10 +9,59 @@ defmodule CjkDoubleStroke.Idsidentifier.Strokerollout do
   alias CjkDoubleStroke.Datagenerators.StaticData
   alias CjkDoubleStroke.Utils
 
+  def matchinitstrokeswithmain(mainstrokes, initstrokes) do
+    # function that take the mainstrokes, and try to substract
+    # the longest possible initstrokes.
+    # then return the substracted strokes
+    initstrokessorted = sort_by_length_desc(initstrokes)
+    res = Enum.map(mainstrokes, fn main ->
+      matchinitstrokeswithmain_helper(main, initstrokessorted)
+    end)
+    res
+  end
+
+  defp matchinitstrokeswithmain_helper(b, initstrokes) do
+   Enum.find_value(initstrokes, b, fn prefix ->
+      if String.starts_with?(b, prefix) do
+        String.trim_leading(b, prefix)
+      else
+        nil
+      end
+    end)
+  end
+
+  defp sort_by_length_desc(strings) when is_list(strings) do
+    Enum.sort_by(strings, fn s ->
+      {-String.length(s), s}
+    end)
+  end
+
+  @spec stroke_rollout_multistr(binary()) :: [binary(), ...]
+  def stroke_rollout_multistr(str) do
+    result =
+    str
+    |> String.graphemes()
+    |> Enum.map(&stroke_rollout/1)
+    |> List.flatten()
+    |> Enum.map_join("", & &1)
+
+    if is_binary(result) do
+        [result]
+      else
+        result
+      end
+  end
+
   def stroke_rollout(char) when is_binary(char) do
     code = StaticData.get_conway(char)
+    if code == nil do
+      raise RuntimeError,
+        message: "in stroke_rollout/1, Conway not found for: #{inspect(char)}"
+    end
     split = conway_split_basic(code)
-    split
+    flatten = Utils.unwrap_nested(split)
+    res = Enum.map(flatten, fn x -> Enum.join(x, "") end)
+    res
   end
 
   def split_escape(str) when is_binary(str) do
@@ -41,7 +90,11 @@ defmodule CjkDoubleStroke.Idsidentifier.Strokerollout do
     flatten = Utils.unwrap_single_nested(backslashreplaced)
     finalflatten = List.flatten(flatten)
     res = expand_splittet(finalflatten, mapofsplits)
-    res
+    # test if res is a list of lists of strings
+    case res do
+      [first | _] when is_binary(first) -> [res]
+      _ -> res
+    end
   end
 
   defp extract_map_splits(lsitofsplits) do

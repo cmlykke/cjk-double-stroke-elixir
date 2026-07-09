@@ -1,0 +1,23 @@
+U+2696F	𦥯	𦥯
+U+672C	本	⿻木一
+U+2E92 ⺒ ⺒
+U+3038 〸 〸
+U+2EDE ⻞ ⻞
+U+2FF0	⿰	⿰
+U+2FF1	⿱	⿱
+U+2FF2	⿲	⿲
+U+2FF3	⿳	⿳
+U+2FF4	⿴	⿴
+U+2FF5	⿵	⿵
+U+2FF6	⿶	⿶
+U+2FF7	⿷	⿷
+U+2FF8	⿸	⿸
+U+2FF9	⿹	⿹
+U+2FFA	⿺	⿺
+U+2FFB	⿻	⿻
+U+2FFC	⿼	⿼
+U+2FFD	⿽	⿽
+U+2FFE	⿾	⿾
+U+2FFF	⿿	⿿
+
+

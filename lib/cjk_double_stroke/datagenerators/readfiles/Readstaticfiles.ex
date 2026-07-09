@@ -60,7 +60,14 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
   @type codepoint_pair() :: {chinese_char_conway(), String.t()}
   @spec read_conway_strokes() :: [codepoint_pair()]
   def read_conway_strokes do
-    read_file("webfiles/codepoint-character-sequence.txt")
+    #read_file("webfiles/codepoint-character-sequence.txt")
+    res1 = read_conway_strokes_helper("webfiles/codepoint-character-sequence.txt")
+    res2 = read_conway_strokes_helper("customfiles/customconway.txt")
+    res1 ++ res2
+  end
+
+  defp read_conway_strokes_helper(filepath) do
+        read_file(filepath)
     |> String.split("\n", trim: true)
     |> Enum.filter(&String.starts_with?(&1, "U+"))
     |> Enum.map(fn line ->
@@ -113,7 +120,13 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
   @type ids_pair() :: {chinese_char_ids(), String.t()}
   @spec read_ids() :: [ids_pair()]
   def read_ids do
-    read_file("webfiles/ids.txt")
+    res = read_ids_helper("webfiles/ids.txt")
+    res2 = read_ids_helper("customfiles/customids.txt")
+    res ++ res2
+  end
+
+  def read_ids_helper(filepath) do
+    read_file(filepath)
     |> String.split("\n", trim: true)
     |> Enum.filter(&String.starts_with?(&1, "U+"))
     |> Enum.map(fn line ->
@@ -123,7 +136,6 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
       [_codepoint, char | rest] = parts
       # Join everything after the character into a single string
       idsseq = Enum.join(rest, " ")
-
       {char, idsseq}
     end)
   end

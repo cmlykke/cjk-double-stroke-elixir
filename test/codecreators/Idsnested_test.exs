@@ -6,6 +6,34 @@ defmodule Idsnested_test do
   alias CjkDoubleStroke.Idsidentifier.Idsnested
 
 
+  test "find char_init_ids_matches" do
+    res = Idsnested.char_init_ids_matches("是", ["氵", "日"])
+    assert res == {"是", ["12134"], ["日"], ["2511"], "251112134"}
+  end
+
+  test "char_init_ids_matches fail to find match" do
+    res = Idsnested.char_init_ids_matches("是", ["氵", "月"])
+    assert res == {"是", ["251112134"], [], [], "251112134"}
+  end
+
+
+  test "Idsnested.ids_head_findhead/1 works" do
+    # the focus of findhead is to keep splitting the
+    # first split item to find the head of the ids sequency.
+    # since we dont know what level of granularity is needed,
+    # it will kepp going until no more ids splits are found
+    res = Idsnested.ids_head_ids("是")
+    assert res == [["是", "日"]]
+  end
+
+  test "Idsnested.ids_head_findhead/1  test 簧" do
+    res = Idsnested.ids_head_ids("簧")
+    assert res == [
+      ["簧", "竹", "亇", "𠂊"],
+      ["簧", "竹", "亇", "𠂉"],
+      ["簧", "竹", "亇", "丿"]]
+  end
+
   test "Idsnested.ids_init_search/1 works" do
     #assert Idsnested.ids_init_search("一") == ["一"]
     #assert Idsnested.ids_init_search("") == []
@@ -20,8 +48,7 @@ defmodule Idsnested_test do
   # U+7C78	籸	⿰米卂[GT]	⿰米⿹⺄𠂇[K]
   test "籸 tested to investigate handling 十 vs 𠂇" do
     res = Idsnested.ids_init_search("籸")
-    assert res ==
-      [["米", "⺄", "十"], ["米", "⺄", "𠂇"], ["米", "⺄", "𠂇"]]
+    assert res == [["米", "⺄", "十"], ["米", "⺄", "𠂇"]]
   end
 
   # U+7C90	粐	⿰米户[G]	⿰米戸[J]
