@@ -11,6 +11,7 @@ defmodule Aelements_test do
   test "find char_init_ids_matches" do
     res = Idsnested.char_init_ids_matches("是", ["氵", "日"])
     res2 = Aelements.get_elements()
+    lettermap = Aelements.get_letters()
     assert res == {"是", ["12134"], ["日"], ["2511"], "251112134"}
   end
 
