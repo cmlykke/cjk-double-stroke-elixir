@@ -1,6 +1,8 @@
 
 defmodule Createlettercodes_test do
     use ExUnit.Case
+
+    alias CjkDoubleStroke.Datagenerators.StaticData
     alias CjkDoubleStroke.Idsidentifier.Createlettercodes
 
 
@@ -89,22 +91,22 @@ defmodule Createlettercodes_test do
 
     test "test get_letter nbvcx" do
         x25 = StaticData.get_letter("25")
-        assert x25 == "m"
+        assert x25 == "x"
 
         c24 = StaticData.get_letter("24")
-        assert c24 == "l"
+        assert c24 == "c"
 
         v23 = StaticData.get_letter("23")
-        assert v23 == "k"
+        assert v23 == "v"
 
         b22 = StaticData.get_letter("22")
-        assert b22 == "j"
+        assert b22 == "b"
 
         n21 = StaticData.get_letter("21")
-        assert n21 == "h"
+        assert n21 == "n"
 
         n2 = StaticData.get_letter("2")
-        assert n2 == "h"
+        assert n2 == "n"
     end
 
 end

@@ -165,5 +165,26 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
     |> Stream.uniq_by(fn {w, _} -> w end)
   end
 
+  @type letter_code_pair() :: {String.t(), String.t()}
+  @spec read_letter_mapping() :: [letter_code_pair()]
+  def read_letter_mapping do
+    "customfiles/lettermapping.txt"
+    |> read_file()
+    |> String.split("\n", trim: true)
+    |> Enum.reject(&String.starts_with?(&1, "#"))
+    |> Enum.map(&parse_letter_line/1)
+    |> Enum.reject(&is_nil/1)
+  end
 
+  defp parse_letter_line(line) do
+    parts =
+      line
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1)
+
+    case parts do
+      [code, letter] -> {code, letter}
+      _ -> nil
+    end
+  end
 end
