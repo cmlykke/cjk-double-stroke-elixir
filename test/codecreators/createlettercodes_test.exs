@@ -3,7 +3,6 @@ defmodule Createlettercodes_test do
     use ExUnit.Case
 
     alias CjkDoubleStroke.Datagenerators.StaticData
-    alias CjkDoubleStroke.Idsidentifier.Createlettercodes
 
 
 
