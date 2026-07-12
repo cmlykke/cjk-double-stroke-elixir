@@ -187,4 +187,27 @@ defmodule CjkDoubleStroke.Datagenerators.Readfiles.Readstaticfiles do
       _ -> nil
     end
   end
+
+  @type aelement_pair() :: {String.t(), String.t()}
+  @spec read_aelements() :: [aelement_pair()]
+  def read_aelements do
+    "customfiles/aelements.txt"
+    |> read_file()
+    |> String.split("\n", trim: true)
+    |> Enum.reject(&String.starts_with?(&1, "#"))
+    |> Enum.map(&parse_aelement_line/1)
+    |> Enum.reject(&is_nil/1)
+  end
+
+  defp parse_aelement_line(line) do
+    parts =
+      line
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1)
+
+    case parts do
+      [_, variant, code] -> {variant, code}
+      _ -> nil
+    end
+  end
 end

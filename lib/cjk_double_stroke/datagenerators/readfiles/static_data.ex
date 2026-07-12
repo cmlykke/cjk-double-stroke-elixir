@@ -56,6 +56,7 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
   def tzai,             do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.tzai())
   def words_json,       do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.words_json())
   def letter_map,       do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.letter_map())
+  def aelements,        do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.aelements())
 
   # === Fast O(1) getters - delegated to remote DB node ===
 
@@ -67,6 +68,8 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
   def get_word_freq(word),   do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_word_freq(word))
 
   def get_letter(code),        do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_letter(code))
+
+  def get_aelement_conway(variant), do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.get_aelement_conway(variant))
 
   def has_radical?(r), do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.has_radical?(r))
 end

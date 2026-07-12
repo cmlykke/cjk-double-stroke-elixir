@@ -63,6 +63,8 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
 
   def get_letter(code),        do: GenServer.call(__MODULE__, {:get_letter, code})
 
+  def get_aelement_conway(variant), do: GenServer.call(__MODULE__, {:get_aelement_conway, variant})
+
   @impl true
   def handle_call({:put, key, value}, _from, state) do
     {:atomic, result} = :mnesia.transaction(fn ->
@@ -116,6 +118,11 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
   @impl true
   def handle_call({:get_letter, code}, _from, state) do
     {:reply, do_map_lookup(:letter_map, code), state}
+  end
+
+  @impl true
+  def handle_call({:get_aelement_conway, variant}, _from, state) do
+    {:reply, do_map_lookup(:aelement_map, variant), state}
   end
 
   @impl true
@@ -174,6 +181,11 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
     write(:letter_mapping, letter_pairs)
     IO.puts("done (#{length(letter_pairs)} entries)")
 
+    IO.write("  aelements... ")
+    aelements = Readstaticfiles.read_aelements()
+    write(:aelements, aelements)
+    IO.puts("done (#{length(aelements)} entries)")
+
     IO.write("  Building lookup maps... ")
     write(:conway_map, Map.new(conway))
     write(:ids_map, Map.new(ids))
@@ -182,6 +194,7 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
     write(:tzai_map, Map.new(tzai))
     write(:words_map, Map.new(words))
     write(:letter_map, Map.new(letter_pairs))
+    write(:aelement_map, Map.new(aelements))
     IO.puts("done")
 
     IO.puts("Static data loaded into Mnesia on DB node.")

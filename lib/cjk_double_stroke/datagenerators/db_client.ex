@@ -28,6 +28,7 @@ defmodule CjkDoubleStroke.Datagenerators.DBClient do
   def tzai,             do: get(:tzai)
   def words_json,       do: get(:words_json)
   def letter_map,       do: get(:letter_map)
+  def aelements,        do: get(:aelements)
 
   # Thin remote calls - lookup happens on DB node, only result travels back
   def get_conway(char),      do: GenServer.call({CjkDoubleStroke.Datagenerators.DBServer, @db_node}, {:get_conway, char})
@@ -38,6 +39,8 @@ defmodule CjkDoubleStroke.Datagenerators.DBClient do
   def get_word_freq(word),   do: GenServer.call({CjkDoubleStroke.Datagenerators.DBServer, @db_node}, {:get_word_freq, word})
 
   def get_letter(code),        do: GenServer.call({CjkDoubleStroke.Datagenerators.DBServer, @db_node}, {:get_letter, code})
+
+  def get_aelement_conway(variant), do: GenServer.call({CjkDoubleStroke.Datagenerators.DBServer, @db_node}, {:get_aelement_conway, variant})
 
   def has_radical?(r), do: MapSet.member?(radicals_set(), r)
 
