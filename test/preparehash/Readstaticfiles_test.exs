@@ -24,23 +24,23 @@ defmodule ReadstaticfilesTest do
     pairs = Readstaticfiles.read_conway_strokes()
     assert is_list(pairs)
     myval = length(pairs)
-    assert myval == 28251
+    assert myval == 28451
     # Test first pair
     assert hd(pairs) == {"〇", "5"}
     # Test last pair
     #assert List.last(pairs) == {"𬺓", "212134521234123452134"}
-    assert List.last(pairs) == {"⺄", "5"}
+    assert List.last(pairs) == {"嗀", "1214512513554"}
   end
 
   test "read_ids --- all characters with IDs sequences" do
     pairs = Readstaticfiles.read_ids()
     assert is_list(pairs)
     count = length(pairs)
-    assert count == 88958
+    assert count == 89091
     # Test first pair
     assert hd(pairs) == {"α", "α"}
     # Test last pair
-    assert List.last(pairs) == {"⿿", "⿿"}
+    assert List.last(pairs) == {"㍾", "⿰明治"}
   end
 
   test "read_hongbing_csv --- simplified character frequencies" do
