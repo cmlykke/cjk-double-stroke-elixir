@@ -29,6 +29,8 @@ defmodule CjkDoubleStroke.Datagenerators.DBClient do
   def words_json,       do: get(:words_json)
   def letter_map,       do: get(:letter_map)
   def aelements,        do: get(:aelements)
+  def aelement_map,     do: get(:aelement_map)
+  def aelement_keys,    do: get(:aelement_keys)
 
   # Thin remote calls - lookup happens on DB node, only result travels back
   def get_conway(char),      do: GenServer.call({CjkDoubleStroke.Datagenerators.DBServer, @db_node}, {:get_conway, char})

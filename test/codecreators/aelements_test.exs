@@ -7,6 +7,21 @@ defmodule Aelements_test do
 
   alias CjkDoubleStroke.Idsidentifier.Aelements
 
+  test "aelement_keys returns set of all keys from the aelement map" do
+    keys = StaticData.aelement_keys()
+    assert is_struct(keys, MapSet)
+    assert MapSet.size(keys) == 42
+    assert MapSet.member?(keys, "木")
+    assert MapSet.member?(keys, "⽊")
+    assert MapSet.member?(keys, "⿱口止")
+    assert MapSet.member?(keys, "⿰⿱𠂊亅⿱𠂊亅")
+    assert MapSet.member?(keys, "⻟")
+    assert MapSet.member?(keys, "車")
+    assert MapSet.member?(keys, "⾞")
+    # all keys should allow lookup
+    assert Enum.all?(keys, fn k -> StaticData.get_aelement_conway(k) != nil end)
+  end
+
   test "test get_aelement_conway 木" do
     test1 = StaticData.get_aelement_conway("木")
     assert test1 == "1234"

@@ -195,6 +195,7 @@ defmodule CjkDoubleStroke.Datagenerators.DBServer do
     write(:words_map, Map.new(words))
     write(:letter_map, Map.new(letter_pairs))
     write(:aelement_map, Map.new(aelements))
+    write(:aelement_keys, aelements |> Map.new() |> Map.keys() |> MapSet.new())
     IO.puts("done")
 
     IO.puts("Static data loaded into Mnesia on DB node.")

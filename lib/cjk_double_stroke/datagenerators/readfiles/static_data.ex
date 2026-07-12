@@ -57,6 +57,8 @@ defmodule CjkDoubleStroke.Datagenerators.StaticData do
   def words_json,       do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.words_json())
   def letter_map,       do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.letter_map())
   def aelements,        do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.aelements())
+  def aelement_map,     do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.aelement_map())
+  def aelement_keys,    do: (ensure_loaded(); CjkDoubleStroke.Datagenerators.DBClient.aelement_keys())
 
   # === Fast O(1) getters - delegated to remote DB node ===
 
